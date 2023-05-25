@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.0.2/pixi.min.js"></script>
+    <title>Proyecto Fotografía</title>
+  </head>
+  <body>
+    <div class="desc">
+      <div class="dec-content">
+        <span class="close">&times;</span>
+        <h2>Ecos Temporales</h2>
+        <p>
+          En el corazón de la ciudad, aquel lugar donde parece que el tiempo se
+          ha congelado, se ven memorias en formas de estructuras por doquier,
+          pero al fijarse bien, uno se dará cuenta que el pasado también es
+          traído al presente por medio de las personas que allí se
+          encuentran.<br /><br />
+          Esta série fotográfica celebra el espíritu indomable de ciertas
+          personas cuyo su día a día es el centro de la ciudad, aquellos adultos
+          mayores que viven de arduo y constante trabajo. A través de imágenes
+          conmovedoras, presenciamos su dedicación inquebrantable, sus rostros
+          grabados con historias de determinación y resiliencia. No son meros
+          vendedores, son faros de fuerza e inspiración, desafiando la edad y
+          las circunstancias para contribuir al entramado de la vida urbana.
+          <br /><br />
+          Por <br /><span class="nombre">Juan Felipe Salazar Trujillo</span
+          ><br /><br />
+          Muchas gracias a todas las personas que participaron: <br /><br />
+          Don Abelardo, Don José, Don Roberto, Doña María, Don Juan Manuel, Doña
+          Rosa, Doña Mariela y Don Carlos Julio.<br /><br />
+          Linkedin: @salazarmedia<br />
+          Github: @salazarmedia
+        </p>
+      </div>
+    </div>
+    <canvas class="view"></canvas>
+
+    <script id="backgroundFragment" type="x-shader/x-fragment">
+      // Adapted from: https://www.shadertoy.com/view/MdlGRr
+
+      // It is required to set the float precision for fragment shaders in OpenGL ES
+      // More info here: https://stackoverflow.com/a/28540641/4908989
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+
+      uniform vec2 uPointerDiff;
+
+      // This function returns 1 if `coord` correspond to a grid line, 0 otherwise
+      float isGridLine (vec2 coord) {
+        vec2 pixelsPerGrid = vec2(50.0, 50.0);
+        vec2 gridCoords = fract(coord / pixelsPerGrid);
+        vec2 gridPixelCoords = gridCoords * pixelsPerGrid;
+        vec2 gridLine = step(gridPixelCoords, vec2(1.0));
+        float isGridLine = max(gridLine.x, gridLine.y);
+        return isGridLine;
+      }
+
+      // Main function
+      void main () {
+        // Coordinates minus the `uPointerDiff` value
+        vec2 coord = gl_FragCoord.xy - uPointerDiff;
+        // Set `color` to black
+        vec3 color = vec3(0.984,0.98,1.0);
+        // If it is a grid line, change blue channel to 0.3
+        // color.b = isGridLine(coord) * 0.3;
+        // Assing the final rgba color to `gl_FragColor`
+        gl_FragColor = vec4(color, 0.0);
+      }
+    </script>
+
+    <script id="stageFragment" type="x-shader/x-fragment">
+      // Adapted from: https://www.shadertoy.com/view/4lSGRw
+
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+
+      // Uniforms from Javascript
+      uniform vec2 uResolution;
+      uniform float uPointerDown;
+
+      // The texture is defined by PixiJS
+      varying vec2 vTextureCoord;
+      uniform sampler2D uSampler;
+
+      // Function used to get the distortion effect
+      vec2 computeUV (vec2 uv, float k, float kcube) {
+        vec2 t = uv - 0.5;
+        float r2 = t.x * t.x + t.y * t.y;
+        float f = 0.0;
+        if (kcube == 0.0) {
+          f = 1.0 + r2 * k;
+        } else {
+          f = 1.0 + r2 * (k + kcube * sqrt(r2));
+        }
+        vec2 nUv = f * t + 0.5;
+        nUv.y = 1.0 - nUv.y;
+        return nUv;
+      }
+
+      void main () {
+        // Normalized coordinates
+        vec2 uv = gl_FragCoord.xy / uResolution.xy;
+
+        // Settings for the effect
+        // Multiplied by `uPointerDown`, a value between 0 and 1
+        float k = -1.0 * uPointerDown;
+        float kcube = 0.5 * uPointerDown;
+        float offset = 0.02 * uPointerDown;
+
+        // Get each channel's color using the texture provided by PixiJS
+        // and the `computeUV` function
+        float red = texture2D(uSampler, computeUV(uv, k + offset, kcube)).r;
+        float green = texture2D(uSampler, computeUV(uv, k, kcube)).g;
+        float blue = texture2D(uSampler, computeUV(uv, k - offset, kcube)).b;
+
+        // Assing the final rgba color to `gl_FragColor`
+        gl_FragColor = vec4(red, green, blue, 1.0);
+      }
+    </script>
+
+    <script src="app.js"></script>
+  </body>
+</html>

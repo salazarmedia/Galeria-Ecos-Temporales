@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+@font-face {
+  font-family: 'Scriptina';
+  src: url('/scriptina.regular-webfont.woff') format('woff');
+}
+@font-face {
+  font-family: 'Scriptina';
+  src: url('/scriptina.regular-webfont.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'hitch-hike';
+  src: url('/hitch-hike.regular-webfont.woff') format('woff');
+}
+@font-face {
+  font-family: 'hitch-hike';
+  src: url('/hitch-hike.regular-webfont.woff2') format('woff2');
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+h2 {
+
+  font-family: 'Scriptina';
+  color: white;
+  font-size: 3rem;
+  text-align: center;
+  line-height: 1.5;
+  margin-top: 1.8rem;
+  margin-bottom: 3rem;
+}
+p {
+  font-family: 'Poppins', sans-serif;
+  color: white;
+  font-size: 1rem;
+  text-align: left;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.nombre {
+  font-family: 'hitch-hike';
+  font-size: 2rem;
+}
+canvas {
+  display: block;
+}
+
+.desc {
+  display: flex;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100vw - 5rem);
+  max-width: calc(100vh - 5rem);
+  max-height: calc(100vh - 5rem);
+  background-color: black;
+  color: white;
+  padding: 1rem;
+  padding-top: 0;
+  overflow: scroll;
+  z-index: 9999;
+}
+
+.desc-content {
+  position: relative;
+}
+
+.close {
+  position: sticky;
+  top: 0.5rem;
+  left: 99%;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100vw - 2rem);
+  max-width: calc(100vh - 2rem);
+  max-height: calc(100vh - 2rem);
+  background-color: transparent;
+  z-index: 9999;
+  padding: 0;
+  box-sizing: border-box;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.popup-image {
+  width: 100%;
+  height: calc(100% - 2rem);
+  touch-action: pinch-zoom;
+  object-fit: contain;
+  padding: 0;
+  margin: 0;
+  max-width: 100%;
+  max-height: calc(100vh - 2rem);
+}
+
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+}
